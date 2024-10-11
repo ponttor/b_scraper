@@ -1,0 +1,27 @@
+.container.min-vh-100.d-flex.align-items-center.justify-content-center
+  .card.shadow-lg.rounded-3.w-50
+    .card-body
+      h1.text-center.mb-4 Item Details
+
+      .mb-3
+        strong URL:
+        span.mb-0
+          = " #{@listing.url}"
+
+      .mb-3
+        strong Price:
+        span.mb-0.text-success
+          = " #{@listing.price}"
+
+      .mb-3
+        strong Rating Value:
+        span.mb-0
+          = " #{@listing.rating_value}"
+
+      .mb-3
+        strong Rating Count:
+        span.mb-0
+          = " #{@listing.rating_count}"
+
+      .text-center.mt-4
+        = link_to 'Back', root_path, class: 'btn btn-secondary'
