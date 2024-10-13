@@ -8,27 +8,26 @@ class ListingsController < ApplicationController
   end
 
   def create
-    clean_url = clean_url(listing_params[:url])
-    @listing = Listing.find_or_initialize_by(url: clean_url)
+    url = clean_url(listing_params[:url])
 
-    unless @listing.persisted?
-      listing_data = ListingService.new(clean_url).fetch
+    @listing = Listing.find_or_initialize_by(url: url)
 
-      @listing.assign_attributes(
-        price: listing_data[:price],
-        rating_value: listing_data[:rating_value] || 0,
-        rating_count: listing_data[:rating_count] || 0,
-      )
-    end
+    raise StandardError, "URL must start with 'alza.cz/'" unless url.start_with?("alza.cz/")
+
+    return redirect_to listing_url(@listing) if @listing.persisted?
+    listing_data = ListingService.new(url).fetch
+    assign_listing_attributes(listing_data)
 
     if @listing.save
       redirect_to listing_url(@listing), flash: { success: "Listing successfully created!" }
     else
+      flash.now[:error] = @listing.errors.full_messages.join(", ")
       render :new, status: :unprocessable_entity
     end
 
   rescue StandardError => e
-    flash.now[:error] = "An error occurred: #{e.message}"
+    # @listing ||= Listing.new
+    flash.now[:error] = e.message
     render :new, status: :unprocessable_entity
   end
 
@@ -42,6 +41,14 @@ class ListingsController < ApplicationController
     parsed_url = URI.parse(url)
     parsed_url = URI.parse("http://#{url}") if parsed_url.scheme.nil?
 
-    "#{parsed_url.host}#{parsed_url.path}"
+    "#{parsed_url.host.sub(/^www\./, '')}#{parsed_url.path}"
+  end
+
+  def assign_listing_attributes(listing_data)
+    @listing.assign_attributes(
+      price: listing_data[:price],
+      rating_value: listing_data[:rating_value],
+      rating_count: listing_data[:rating_count],
+    )
   end
 end

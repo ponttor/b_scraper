@@ -33,6 +33,8 @@ gem "simple_form"
 gem "slim_lint"
 gem "slim-rails"
 gem "faraday"
+gem "nokogiri"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
@@ -67,4 +69,6 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webmock"
+  gem "minitest-power_assert"
 end

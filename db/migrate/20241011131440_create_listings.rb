@@ -2,9 +2,9 @@ class CreateListings < ActiveRecord::Migration[7.2]
   def change
     create_table :listings do |t|
       t.string :url, null: false
-      t.float :price
+      t.integer :price
+      t.integer :rating_count
       t.float :rating_value
-      t.float :rating_count
 
       t.timestamps
     end

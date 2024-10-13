@@ -1,0 +1,11 @@
+one:
+  url: "alza.cz/samsung-dv90bb9545gbs7-d12355019.htm"
+  price: 1500
+  rating_value: 4.7
+  rating_count: 320
+
+empty:
+  url: "alza.cz/invalid-data"
+  price: nil
+  rating_value: nil
+  rating_count: nil

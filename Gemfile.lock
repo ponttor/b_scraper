@@ -94,6 +94,9 @@ GEM
       xpath (~> 3.2)
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
+    crack (1.0.0)
+      bigdecimal
+      rexml
     crass (1.0.6)
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
@@ -113,6 +116,7 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hashdiff (1.1.1)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
@@ -140,6 +144,9 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
     minitest (5.25.1)
+    minitest-power_assert (0.3.1)
+      minitest
+      power_assert (>= 1.1)
     msgpack (1.7.3)
     net-http (0.4.1)
       uri
@@ -164,6 +171,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.8)
+    power_assert (2.0.4)
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
@@ -301,6 +309,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webmock (3.24.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.2)
     websocket (1.2.11)
     websocket-driver (0.7.6)
@@ -327,6 +339,8 @@ DEPENDENCIES
   faraday
   jbuilder
   jsbundling-rails
+  minitest-power_assert
+  nokogiri
   pg
   puma (>= 5.0)
   rails (~> 7.2.1)
@@ -345,6 +359,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  webmock
 
 BUNDLED WITH
    2.4.6
