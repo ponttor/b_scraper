@@ -35,10 +35,28 @@ class ListingService
     rating_count = parsed_body.css(".ratingCount").first&.text&.gsub(/[^\d]/, "")&.to_i
     rating_value = parsed_body.css(".ratingValue").first&.text&.gsub(",", ".")&.to_f
 
+    meta_data = extract_meta_tags(parsed_body)
+
     {
       price: price,
       rating_value: rating_value,
-      rating_count: rating_count
+      rating_count: rating_count,
+      meta_data: meta_data
     }
+  end
+
+  def extract_meta_tags(parsed_body)
+    meta_data = {}
+
+    parsed_body.css("meta").each do |meta_tag|
+      name_or_http_equiv = meta_tag["name"] || meta_tag["http-equiv"]
+      content = meta_tag["content"]
+
+      if name_or_http_equiv && content
+        meta_data[name_or_http_equiv] = content
+      end
+    end
+
+    meta_data
   end
 end
