@@ -1,7 +1,12 @@
 = simple_form_for listing, url: listings_path, method: :post do |f|
   = f.error_notification
   = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
   .form-inputs
-    = f.input :url, input_html: { class: 'form-control' }, label_html: { class: 'form-label mt-1 mb-0' }, required: true
-  .form-inputs.mb-4.mt-2
+    = f.input :url, label: false, input_html: { class: 'form-control', placeholder: 'enter url'}, required: true
+
+  .form-inputs
+    = f.input :meta_keys, label: false, input_html: { class: 'form-control', placeholder: 'e.g., description, keywords' }
+
+  .form-inputs.mb-4.mt-4
     = f.submit 'Submit', class: 'btn btn-primary'
