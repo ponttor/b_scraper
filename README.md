@@ -4,10 +4,10 @@
 
 ## Technical specifications and requirements for the project
 
-ruby ​​-v => 3.1.1
-rails -v => 7.2.1
-bootstrap
-slim
+ruby ​​-v => 3.1.1  
+rails -v => 7.2.1  
+bootstrap  
+slim  
 postgres for production environment
 
 ## launching the project in development mode
@@ -15,7 +15,7 @@ postgres for production environment
 ```bash
 make install
 ```
-API_KEY=
+API_KEY =
 
 ```bash
 rails s
