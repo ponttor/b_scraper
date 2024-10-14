@@ -33,10 +33,12 @@ class ListingService
   end
 
   def extract_attributes(parsed_body)
-    price = parsed_body.css(".price-box__price")[0]&.text&.gsub(/[^\d]/, "").strip&.to_i
+    price = parsed_body.css(".price-box__price")[0]&.text&.gsub(/[^\d]/, "")&.strip&.to_i
+
+    raise FetchDataError, "Price not found in the response" if price.nil? || price == 0
+
     rating_count = parsed_body.css(".ratingCount").first&.text&.gsub(/[^\d]/, "")&.to_i
     rating_value = parsed_body.css(".ratingValue").first&.text&.gsub(",", ".")&.to_f
-
     meta_data = extract_meta_tags(parsed_body)
 
     {

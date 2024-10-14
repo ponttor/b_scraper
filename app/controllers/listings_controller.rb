@@ -28,7 +28,6 @@ class ListingsController < ApplicationController
     end
 
   rescue StandardError => e
-    # @listing ||= Listing.new
     flash.now[:error] = e.message
     render :new, status: :unprocessable_entity
   end

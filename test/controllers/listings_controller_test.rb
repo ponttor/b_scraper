@@ -89,9 +89,20 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  # test "clean_url formats url correctly" do
-  #   assert_equal "alza.cz/product/123", @controller.clean_url("http://www.alza.cz/product/123")
-  #   assert_equal "alza.cz/product/123", @controller.clean_url("alza.cz/product/123")
-  #   assert_equal "alza.cz/product/123", @controller.clean_url("https://www.alza.cz/product/123")
-  # end
+  test "should not create with valid alza prefix but invalid URL" do
+    invalid_url = "alza.cz/invalid-product"
+    invalid_attrs = { url: invalid_url }
+
+    stub_request(:get, /api.scraperapi.com/).to_return(
+      status: 200,
+      body: "<html></html>",
+      headers: { "Content-Type" => "text/html" }
+    )
+
+    post listings_url, params: { listing: invalid_attrs }
+
+    assert_response :unprocessable_entity
+
+    assert_match "Price not found in the response", response.body
+  end
 end
