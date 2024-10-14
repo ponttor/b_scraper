@@ -1,4 +1,6 @@
 class Listing < ApplicationRecord
+  attr_accessor :meta_keys
+
   validates :url, presence: true, uniqueness: true
 
   validates :price, numericality: { allow_nil: true }

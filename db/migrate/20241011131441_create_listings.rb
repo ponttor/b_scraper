@@ -5,6 +5,7 @@ class CreateListings < ActiveRecord::Migration[7.2]
       t.integer :price
       t.integer :rating_count
       t.float :rating_value
+      t.json :meta_data
 
       t.timestamps
     end

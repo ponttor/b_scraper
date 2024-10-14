@@ -23,5 +23,15 @@
         span.mb-0
           = " #{@listing.rating_count}"
 
+      
+      - if @filtered_meta_data.present?
+        .mb-3
+          strong Meta Data:
+          ul
+            - @filtered_meta_data.each do |key, value|
+              li
+                strong = key.capitalize + ": "
+                span = value
+
       .text-center.mt-4
         = link_to 'Back', root_path, class: 'btn btn-secondary'

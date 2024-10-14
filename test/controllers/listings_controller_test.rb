@@ -3,7 +3,7 @@ require "webmock/minitest"
 
 class ListingsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @listing = listings(:one)
+    @listing = listings(:full)
     @empty_listing = listings(:empty)
     @url = "alza.cz/samsung-dv90bb9545gbs7-d12355019.htm"
     @attrs = {
@@ -11,9 +11,31 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  test "show" do
-    get listing_url(@listing)
+  test "show with meta_keys filtering" do
+    meta_keys = "description,keywords"
+    get listing_url(@listing), params: { meta_keys: meta_keys }
     assert_response :success
+
+    assert_select "strong", text: "Description:"
+    assert_select "strong", text: "Keywords:"
+    assert_select "strong", text: "Title:", count: 0
+  end
+
+  test "show no meta if there is no matching meta_keys" do
+    meta_keys = "nonexistent_key"
+    get listing_url(@listing), params: { meta_keys: meta_keys }
+    assert_response :success
+
+    assert_select "strong", text: "Description:", count: 0
+    assert_select "strong", text: "Keywords:", count: 0
+  end
+
+  test "show with empty meta_keys" do
+    get listing_url(@listing), params: { meta_keys: "" }
+    assert_response :success
+
+    assert_select "strong", text: "Description:", count: 0
+    assert_select "strong", text: "Keywords:", count: 0
   end
 
   test "new" do
@@ -21,11 +43,15 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "create" do
+  test "create with meta_data" do
     response_data = {
       price: @listing.price,
       rating_value: @listing.rating_value,
-      rating_count: @listing.rating_count
+      rating_count: @listing.rating_count,
+      meta_data: {
+        description: "High-end Samsung dryer",
+        keywords: "dryer, Samsung, home appliances"
+      }
     }.to_json
 
     stub_request(:post, @url)
@@ -43,6 +69,9 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @listing.rating_value, listing.rating_value
     assert_equal @listing.rating_count, listing.rating_count
 
+    assert_equal "High-end Samsung dryer", listing.meta_data["description"]
+    assert_equal "dryer, Samsung, home appliances", listing.meta_data["keywords"]
+
     assert_redirected_to listing_url(listing)
   end
 
@@ -59,4 +88,10 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  # test "clean_url formats url correctly" do
+  #   assert_equal "alza.cz/product/123", @controller.clean_url("http://www.alza.cz/product/123")
+  #   assert_equal "alza.cz/product/123", @controller.clean_url("alza.cz/product/123")
+  #   assert_equal "alza.cz/product/123", @controller.clean_url("https://www.alza.cz/product/123")
+  # end
 end

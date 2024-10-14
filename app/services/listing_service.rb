@@ -1,6 +1,8 @@
 class ListingService
+  class FetchDataError < StandardError; end
+  class ParseDataError < StandardError; end
+
   SCRAPER_API_URL = "https://api.scraperapi.com/"
-  PROXY = "http://#{ENV['ZENROWS_API_KEY']}:js_render=true&wait_for=.price-box__price&premium_proxy=true&proxy_country=cz&autoparse=true@api.zenrows.com:8001"
 
   def initialize(url)
     @url = url
@@ -20,14 +22,14 @@ class ListingService
     uri.query = URI.encode_www_form(params)
 
     Net::HTTP.get(uri)
-  rescue Faraday::Error => e
+  rescue StandardError => e
     raise FetchDataError, "External request failed: #{e.message}"
   end
 
   def parse_response(response)
     Nokogiri::HTML(response)
-  rescue JSON::ParserError => e
-    raise "Failed to parse response: #{e.message}"
+  rescue StandardError => e
+    raise ParseDataError, "Failed to parse response: #{e.message}"
   end
 
   def extract_attributes(parsed_body)

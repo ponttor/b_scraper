@@ -1,11 +1,16 @@
-one:
+full:
   url: "alza.cz/samsung-dv90bb9545gbs7-d12355019.htm"
   price: 1500
   rating_value: 4.7
   rating_count: 320
+  meta_data:
+    description: "High-end Samsung dryer"
+    keywords: "dryer, Samsung, home appliances"
 
 empty:
-  url: "alza.cz/invalid-data"
-  price: nil
-  rating_value: nil
-  rating_count: nil
+  url: "alza.cz/empty-item"
+  price: 0
+  rating_value: 0
+  rating_count: 0
+  meta_data: {}
+
