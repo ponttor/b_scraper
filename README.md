@@ -1,6 +1,10 @@
+[![CI Status](https://github.com/ponttor/b-scraper/actions/workflows/main.yml/badge.svg)](https://github.com/ponttor/b-scraper/actions)
+
 ## [B Scraper](https://b-scraper-fvsc.onrender.com)
 
-*A service to extract data from a website. App -> [b-scraper](https://b-scraper-fvsc.onrender.com)*
+*A service to extract data from Alza.cz.*
+
+*Published on render: https://b-scraper-fvsc.onrender.com*
 
 ## Technical specifications and requirements for the project
 
@@ -10,13 +14,39 @@ bootstrap
 slim  
 postgres for production environment
 
-## launching the project in development mode
+## Local installation
 
 ```bash
-make install
+git clone git@github.com:ponttor/b-scraper.git && \
+  cd ./b-scraper && \
+  make setup
 ```
-API_KEY =
+
+## Starting project
 
 ```bash
-rails s
+make start-dev
+```
+
+## Refreshing database
+
+```bash
+make cleanup
+```
+
+## Starting tests and linting code
+
+```bash
+make check
+```
+
+Or start them separately:
+
+```bash
+make lint
+```
+
+```bash
+make test
+```
 
