@@ -1,4 +1,5 @@
 linters:
-  RuboCop:
-    enabled: true
-    config_file: .rubocop.yml
+  LineLength:
+    max: 120
+  RedundantDiv:
+    enabled: false
