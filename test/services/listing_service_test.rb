@@ -1,9 +1,11 @@
-require "test_helper"
-require "webmock/minitest"
+# frozen_string_literal: true
+
+require 'test_helper'
+require 'webmock/minitest'
 
 class ListingServiceTest < ActiveSupport::TestCase
   setup do
-    @url = "https://www.alza.cz/some-product"
+    @url = 'https://www.alza.cz/some-product'
     @service = ListingService.new(@url)
     @response_data = <<-HTML
       <html>
@@ -16,11 +18,11 @@ class ListingServiceTest < ActiveSupport::TestCase
     HTML
   end
 
-  test "successfully fetches and parses data" do
+  test 'successfully fetches and parses data' do
     stub_request(:get, /api.scraperapi.com/).to_return(
       status: 200,
       body: @response_data,
-      headers: { "Content-Type" => "text/html" }
+      headers: { 'Content-Type' => 'text/html' }
     )
 
     result = @service.fetch
@@ -28,7 +30,7 @@ class ListingServiceTest < ActiveSupport::TestCase
     assert_equal 1500, result[:price]
     assert_equal 320, result[:rating_count]
     assert_equal 4.7, result[:rating_value]
-    assert_equal "Product description", result[:meta_data]["description"]
-    assert_equal "product, test", result[:meta_data]["keywords"]
+    assert_equal 'Product description', result[:meta_data]['description']
+    assert_equal 'product, test', result[:meta_data]['keywords']
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Listing < ApplicationRecord
   attr_accessor :meta_keys
 

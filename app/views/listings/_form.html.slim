@@ -3,10 +3,10 @@
   = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
 
   .form-inputs
-    = f.input :url, label: false, input_html: { class: 'form-control', placeholder: 'enter url'}, required: true
+    = f.input :url, label: false, input_html: { class: 'form-control', placeholder: 'enter url' }, required: true
 
   .form-inputs
-    = f.input :meta_keys, label: false, input_html: { class: 'form-control', placeholder: 'e.g., description, keywords' }
+    = f.input :meta_keys, label: false, input_html: { class: 'form-control', placeholder: 'e.g. description, keywords' }
 
   .form-inputs.mb-4.mt-4
     = f.submit 'Submit', class: 'btn btn-primary'

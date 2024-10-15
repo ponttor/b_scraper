@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UrlHelper
   def clean_url(url)
     parsed_url = URI.parse(url)

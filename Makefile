@@ -6,6 +6,9 @@ start-dev:
 	rm -rf tmp/pids/server.pid
 	bin/rails s
 
+install:
+	bundle install
+
 setup:
 	bundle install
 	yarn install

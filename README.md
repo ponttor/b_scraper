@@ -1,4 +1,4 @@
-[![CI Status](https://github.com/ponttor/b-scraper/actions/workflows/main.yml/badge.svg)](https://github.com/ponttor/b-scraper/actions)
+[![CI Status](https://github.com/ponttor/b_scraper/actions/workflows/main.yml/badge.svg)](https://github.com/ponttor/b_scraper/actions)
 
 ## [B Scraper](https://b-scraper-fvsc.onrender.com)
 
