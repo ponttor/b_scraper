@@ -25,6 +25,5 @@ jobs:
 
       - run: |
           make setup
-          bin/rails assets:precompile
           make test
           make lint

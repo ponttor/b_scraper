@@ -20,7 +20,7 @@ setup-without-production: without-production setup
 	cat .env.github .env.sentry | sort > .env || true
 
 cleanup:
-	bin/rails db:drop db:create db:migrate db:seed
+	bin/rails db:drop db:create db:migrate
 
 check: test lint
 
