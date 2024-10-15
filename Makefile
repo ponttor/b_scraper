@@ -12,7 +12,6 @@ setup:
 	yarn build
 	yarn build:css
 	bin/rails db:migrate
-	bin/rails db:seed
 
 without-production:
 	bundle config set --local without 'production'
