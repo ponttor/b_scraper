@@ -23,12 +23,12 @@ class ListingsController < ApplicationController
     if @listing.save
       redirect_to listing_url(@listing, meta_keys: listing_params[:meta_keys]), flash: { success: "Success!" }
     else
-      flash.now[:error] = @listing.errors.full_messages.join(", ")
+      flash.now[:danger] = @listing.errors.full_messages.join(", ")
       render :new, status: :unprocessable_entity
     end
 
   rescue StandardError => e
-    flash.now[:error] = e.message
+    flash.now[:danger] = e.message
     render :new, status: :unprocessable_entity
   end
 
