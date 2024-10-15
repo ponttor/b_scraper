@@ -1,21 +1,35 @@
-# local install for development mode
-install: install_gems make_env_file prepare_db prepare_assets tests
+start:
+	rm -rf tmp/pids/server.pid
+	bin/rails s -b 0.0.0.0
 
-tests:
+start-dev:
+	rm -rf tmp/pids/server.pid
+	bin/rails s
+
+setup:
+	bundle install
+	yarn install
+	yarn build
+	yarn build:css
+	bin/rails db:migrate
+	bin/rails db:seed
+
+without-production:
+	bundle config set --local without 'production'
+
+setup-without-production: without-production setup
+	cat .env.github .env.sentry | sort > .env || true
+
+cleanup:
+	bin/rails db:drop db:create db:migrate db:seed
+
+check: test lint
+
+lint:
+	bundle exec rubocop -a
+	bundle exec slim-lint app/views/
+
+test:
 	bin/rails test
 
-########################################
-
-prepare_assets:
-	bin/rails assets:precompile
-
-prepare_db:
-	bin/rails db:create db:migrate
-
-install_gems:
-	bundle install
-
-make_env_file:
-	@if [ ! -f .env ]; then \
-		cp .env.example .env; \
-	fi
+.PHONY: test
