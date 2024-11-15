@@ -30,12 +30,15 @@ gem 'jbuilder'
 # gem "bcrypt", "~> 3.1.7"
 gem 'faraday'
 gem 'nokogiri'
+gem 'public_suffix'
+gem 'rails-controller-testing'
+gem 'redis'
 gem 'sentry-rails'
 gem 'sentry-ruby'
+gem 'sidekiq'
 gem 'simple_form'
 gem 'slim_lint'
 gem 'slim-rails'
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mswin mswin64 mingw x64_mingw jruby]
 
@@ -72,4 +75,5 @@ group :test do
   gem 'minitest-power_assert'
   gem 'selenium-webdriver'
   gem 'webmock'
+  gem 'simplecov'
 end

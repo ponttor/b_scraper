@@ -6,8 +6,8 @@ require 'webmock/minitest'
 class ListingsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @listing = listings(:full)
-    @empty_listing = listings(:empty)
-    @url = 'alza.cz/samsung-dv90bb9545gbs7-d12355019.htm'
+    @url = 'alza.cz/test-product'
+    @invalid_url = 'invalid-url'
     @attrs = {
       url: @url
     }
@@ -46,65 +46,77 @@ class ListingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create with meta_data' do
-    response_data = {
-      price: @listing.price,
-      rating_value: @listing.rating_value,
-      rating_count: @listing.rating_count,
-      meta_data: {
-        description: 'High-end Samsung dryer',
-        keywords: 'dryer, Samsung, home appliances'
-      }
-    }.to_json
+    Rails.cache.clear
+    response_body = <<-HTML
+      <html>
+        <div class="price-box__price">1 500 CZK</div>
+        <div class="ratingCount">320</div>
+        <div class="ratingValue">4.7</div>
+        <meta name="description" content="Product description">
+        <meta name="keywords" content="product, test">
+      </html>
+    HTML
 
-    stub_request(:post, @url)
-      .to_return(
-        status: 200,
-        body: response_data,
-        headers: { 'Content-Type' => 'application/json' }
-      )
+    stub_request(:get, 'https://api.scraperapi.com/?api_key&autoparse=true&url=alza.cz/test-product')
+      .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'text/html' })
 
     post listings_url, params: { listing: @attrs }
 
     listing = Listing.find_by(url: @attrs[:url])
-
     assert_equal @listing.price, listing.price
     assert_equal @listing.rating_value, listing.rating_value
     assert_equal @listing.rating_count, listing.rating_count
 
-    assert_equal 'High-end Samsung dryer', listing.meta_data['description']
-    assert_equal 'dryer, Samsung, home appliances', listing.meta_data['keywords']
+    assert_equal 'Product description', listing.meta_data['description']
+    assert_equal 'product, test', listing.meta_data['keywords']
 
-    assert_redirected_to listing_url(listing)
+    assert_redirected_to root_url
+  end
+
+  test 'should return cached data if listing is already cached' do
+    Rails.cache.write(@url, @listing)
+
+    post listings_url, params: { listing: { url: @url } }
+
+    listing = assigns(:listing)
+
+    assert_equal @listing['price'], listing['price']
+    assert_equal @listing['rating_value'], listing['rating_value']
+    assert_equal @listing['rating_count'], listing['rating_count']
+    assert_equal @listing['meta_data']['description'], listing['meta_data']['description']
+
+    assert_no_enqueued_jobs
+  end
+
+  test 'should return existing listing if it is already in the database' do
+    post listings_url, params: { listing: { url: @listing.url } }
+    assert_redirected_to listing_url(@listing)
+
+    listing = assigns(:listing)
+
+    assert_equal listing['price'], @listing['price']
+    assert_equal listing['rating_value'], @listing['rating_value']
+    assert_equal listing['rating_count'], @listing['rating_count']
+    assert_equal listing['meta_data']['description'], @listing['meta_data']['description']
+
+    assert_no_enqueued_jobs
   end
 
   test 'should not create with empty URL' do
     post listings_url, params: { listing: { url: '' } }
-
     assert_response :unprocessable_entity
   end
 
-  test 'should not create with invalid url' do
-    invalid_attrs = { url: 'invalid-url' }
-
-    post listings_url, params: { listing: invalid_attrs }
-
+  test 'should not create with invalid url format' do
+    post listings_url, params: { listing: { url: @invalid_url } }
     assert_response :unprocessable_entity
   end
 
-  test 'should not create with valid alza prefix but invalid URL' do
-    invalid_url = 'alza.cz/invalid-product'
-    invalid_attrs = { url: invalid_url }
+  # test 'should create listing and enqueue job if not in cache or database' do
 
-    stub_request(:get, /api.scraperapi.com/).to_return(
-      status: 200,
-      body: '<html></html>',
-      headers: { 'Content-Type' => 'text/html' }
-    )
+  # end
 
-    post listings_url, params: { listing: invalid_attrs }
+  # test 'should handle Redis errors gracefully' do
 
-    assert_response :unprocessable_entity
-
-    assert_match 'Price not found in the response', response.body
-  end
+  # end
 end

@@ -14,21 +14,18 @@ class ListingsController < ApplicationController
 
   def create
     url = clean_url(listing_params[:url])
-    @listing = Listing.find_or_initialize_by(url:)
-
     raise InvalidUrlError, "URL must start with 'alza.cz/'" unless url.start_with?('alza.cz/')
-    return redirect_to listing_url(@listing, meta_keys: listing_params[:meta_keys]) if @listing.persisted?
 
-    listing_data = ListingService.new(url).fetch
-    assign_listing_attributes(listing_data)
+    @listing = fetch_or_cache_listing(url)
 
-    if @listing.save
-      redirect_to listing_url(@listing, meta_keys: listing_params[:meta_keys]), flash: { success: 'Success!' }
-    else
-      flash.now[:danger] = @listing.errors.full_messages.join(', ')
-      render :new, status: :unprocessable_entity
+    if @listing
+      return redirect_to listing_url(@listing, meta_keys: listing_params[:meta_keys])
     end
+
+    flash[:success] = 'Listing is being processed!'
+    redirect_to root_path
   rescue StandardError => e
+    @listing = Listing.new
     flash.now[:danger] = e.message
     render :new, status: :unprocessable_entity
   end
@@ -39,19 +36,23 @@ class ListingsController < ApplicationController
     params.require(:listing).permit(:url, :meta_keys)
   end
 
-  def assign_listing_attributes(listing_data)
-    @listing.assign_attributes(
-      price: listing_data[:price],
-      meta_data: listing_data[:meta_data],
-      rating_value: listing_data[:rating_value],
-      rating_count: listing_data[:rating_count]
-    )
-  end
-
   def filter_meta_data(meta_data)
     meta_keys = parse_meta_keys
 
     meta_data.select { |key, _| meta_keys.include?(key) }
+  end
+
+  def fetch_or_cache_listing(url)
+    Rails.cache.fetch(url, expires_in: 12.hours) do
+      listing = Listing.find_or_initialize_by(url:)
+
+      if listing.persisted?
+        listing
+      else
+        ScrapListingDataJob.perform_later(url)
+        nil
+      end
+    end
   end
 
   def parse_meta_keys

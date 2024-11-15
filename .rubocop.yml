@@ -54,3 +54,6 @@ Style/IfUnlessModifier:
 
 Style/FrozenStringLiteralComment:
   Enabled: true
+
+Rails/I18nLocaleTexts:
+  Enabled: false
